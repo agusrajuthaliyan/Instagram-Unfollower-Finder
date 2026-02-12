@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Unfollower Finder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #09090b;
+            color: #fafafa;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 12px 4px 4px;
+            background: #18181b;
+            border: 1px solid #27272a;
+            border-radius: 100px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: #a1a1aa;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .pill:hover {
+            border-color: #3f3f46;
+        }
+
+        .pill-icon {
+            width: 20px;
+            height: 20px;
+            background: #27272a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fafafa;
+        }
+
+        h1 {
+            font-size: clamp(36px, 6vw, 64px);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            margin-bottom: 16px;
+            line-height: 1.1;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to bottom right, #fafafa, #71717a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #a1a1aa;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        /* Main Content */
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section {
+            background: #09090b;
+            border: 1px solid #27272a;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .section-header {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .section-description {
+            font-size: 14px;
+            color: #a1a1aa;
+        }
+
+        /* Steps */
+        .steps {
+            list-style: none;
+        }
+
+        .step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #27272a;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            background: #fafafa;
+            color: #09090b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .step-content {
+            flex: 1;
+            padding-top: 4px;
+        }
+
+        .step-content p {
+            font-size: 14px;
+            color: #a1a1aa;
+            line-height: 1.6;
+        }
+
+        .step-content strong {
+            color: #fafafa;
+        }
+
+        /* Upload Grid */
+        .upload-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .upload-item {
+            position: relative;
+            border: 2px dashed #27272a;
+            border-radius: 12px;
+            padding: 32px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #09090b;
+        }
+
+        .upload-item:hover {
+            border-color: #3f3f46;
+            background: #18181b;
+        }
+
+        .upload-item.active {
+            border-style: solid;
+            border-color: #52525b;
+            background: #18181b;
+        }
+
+        .upload-item input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 12px;
+            opacity: 0.5;
+        }
+
+        .upload-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .upload-subtitle {
+            font-size: 13px;
+            color: #71717a;
+        }
+
+        .file-name {
+            display: none;
+            margin-top: 12px;
+            font-size: 12px;
+            color: #a1a1aa;
+            padding: 4px 12px;
+            background: #27272a;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .upload-item.active .upload-subtitle {
+            display: none;
+        }
+
+        .upload-item.active .file-name {
+            display: inline-block;
+        }
+
+        /* Button */
+        .btn {
+            width: 100%;
+            padding: 12px 24px;
+            background: #fafafa;
+            color: #09090b;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: #e4e4e7;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #18181b;
+            color: #fafafa;
+            border: 1px solid #27272a;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #27272a;
+        }
+
+        /* Results */
+        .results {
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            gap: 16px;
+        }
+
+        .results-title {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        /* Stats Grid */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat {
+            background: #18181b;
+            border: 1px solid #27272a;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            letter-spacing: -0.02em;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #71717a;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+        }
+
+        /* User List */
+        .user-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .user-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .user-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .user-list::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 3px;
+        }
+
+        .user-list::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #18181b;
+            border: 1px solid #27272a;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+
+        .user-item:hover {
+            border-color: #3f3f46;
+            background: #27272a;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3f3f46, #52525b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .username {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .profile-link {
+            font-size: 13px;
+            color: #71717a;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .profile-link:hover {
+            color: #a1a1aa;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            width: 64px;
+            height: 64px;
+            background: #18181b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 28px;
+        }
+
+        .empty-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-description {
+            font-size: 14px;
+            color: #71717a;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: #52525b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 16px;
+            }
+
+            .hero {
+                margin-bottom: 48px;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+
+            .section {
+                padding: 24px;
+            }
+
+            .upload-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="pill">
+                <div class="pill-icon">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </div>
+                100% Private — Client-side only
+            </div>
+            <h1 class="gradient-text">Instagram Unfollower Finder</h1>
+            <p class="subtitle">Discover who's not following you back on Instagram. Your data stays on your device — no uploads, no tracking.</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Instructions Section -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">How to download your Instagram data</h2>
+                    <p class="section-description">Follow these steps to get your follower and following data from Instagram</p>
+                </div>
+
+                <ol class="steps">
+                    <li class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <p>Go to <strong>Instagram Settings</strong> → Your Activity → Download Your Information</p>
+                        </div>
+                    </li>
+                    <li class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <p>Request a download in <strong>HTML format</strong></p>
+                        </div>
+                    </li>
+                    <li class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <p>Select <strong>Followers and Following</strong> from available data</p>
+                        </div>
+                    </li>
+                    <li class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <p>Wait for Instagram to email you the download link (usually within 48 hours)</p>
+                        </div>
+                    </li>
+                    <li class="step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <p>Download and extract the ZIP file</p>
+                        </div>
+                    </li>
+                    <li class="step">
+                        <div class="step-number">6</div>
+                        <div class="step-content">
+                            <p>Upload <strong>followers.html</strong> and <strong>following.html</strong> below</p>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Upload your files</h2>
+                    <p class="section-description">Select or drag and drop your HTML files</p>
+                </div>
+
+                <div class="upload-grid">
+                    <div class="upload-item" id="followersBox">
+                        <input type="file" id="followersFile" accept=".html">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        <div class="upload-title">Followers</div>
+                        <div class="upload-subtitle">Upload followers.html</div>
+                        <span class="file-name" id="followersName"></span>
+                    </div>
+
+                    <div class="upload-item" id="followingBox">
+                        <input type="file" id="followingFile" accept=".html">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        <div class="upload-title">Following</div>
+                        <div class="upload-subtitle">Upload following.html</div>
+                        <span class="file-name" id="followingName"></span>
+                    </div>
+                </div>
+
+                <button class="btn" id="analyzeBtn" disabled>Analyze</button>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results" id="results">
+                <div class="section">
+                    <div class="results-header">
+                        <h2 class="results-title">Results</h2>
+                        <button class="btn-secondary btn" id="exportBtn" style="width: auto; padding: 10px 20px;">Export CSV</button>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-value" id="totalFollowing">0</div>
+                            <div class="stat-label">Following</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="totalFollowers">0</div>
+                            <div class="stat-label">Followers</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="notFollowingBack">0</div>
+                            <div class="stat-label">Not Following Back</div>
+                        </div>
+                    </div>
+
+                    <div id="userListContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Your data is processed entirely in your browser. Nothing is uploaded to any server.
+    </footer>
+
+    <script>
+        let followersData = null;
+        let followingData = null;
+
+        const followersFileInput = document.getElementById('followersFile');
+        const followingFileInput = document.getElementById('followingFile');
+        const followersBox = document.getElementById('followersBox');
+        const followingBox = document.getElementById('followingBox');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const results = document.getElementById('results');
+        const exportBtn = document.getElementById('exportBtn');
+
+        function parseInstagramHTML(htmlContent) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlContent, 'text/html');
+            const users = [];
+            
+            const links = doc.querySelectorAll('a[href*="instagram.com"]');
+            
+            links.forEach(link => {
+                const username = link.textContent.trim();
+                const href = link.getAttribute('href');
+                
+                if (username && href && !users.some(u => u.username === username)) {
+                    users.push({
+                        username: username,
+                        url: href
+                    });
+                }
+            });
+
+            return users;
+        }
+
+        followersFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const text = await file.text();
+                followersData = parseInstagramHTML(text);
+                document.getElementById('followersName').textContent = file.name;
+                followersBox.classList.add('active');
+                checkAnalyzeButton();
+            }
+        });
+
+        followingFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const text = await file.text();
+                followingData = parseInstagramHTML(text);
+                document.getElementById('followingName').textContent = file.name;
+                followingBox.classList.add('active');
+                checkAnalyzeButton();
+            }
+        });
+
+        function checkAnalyzeButton() {
+            if (followersData && followingData) {
+                analyzeBtn.disabled = false;
+            }
+        }
+
+        analyzeBtn.addEventListener('click', () => {
+            const followerUsernames = new Set(followersData.map(u => u.username.toLowerCase()));
+            const notFollowingBack = followingData.filter(
+                user => !followerUsernames.has(user.username.toLowerCase())
+            );
+
+            displayResults(notFollowingBack);
+            
+            document.getElementById('totalFollowing').textContent = followingData.length;
+            document.getElementById('totalFollowers').textContent = followersData.length;
+            document.getElementById('notFollowingBack').textContent = notFollowingBack.length;
+
+            results.classList.add('show');
+            setTimeout(() => {
+                results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        });
+
+        function displayResults(users) {
+            const container = document.getElementById('userListContainer');
+            
+            if (users.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">✓</div>
+                        <div class="empty-title">Everyone follows you back!</div>
+                        <div class="empty-description">All accounts you follow are following you back.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const userList = document.createElement('div');
+            userList.className = 'user-list';
+
+            users.forEach(user => {
+                const userItem = document.createElement('div');
+                userItem.className = 'user-item';
+                
+                const initial = user.username.charAt(0).toUpperCase();
+                
+                userItem.innerHTML = `
+                    <div class="avatar">${initial}</div>
+                    <div class="user-info">
+                        <div class="username">${user.username}</div>
+                        <a href="${user.url}" target="_blank" class="profile-link">View profile</a>
+                    </div>
+                `;
+                
+                userList.appendChild(userItem);
+            });
+
+            container.innerHTML = '';
+            container.appendChild(userList);
+        }
+
+        exportBtn.addEventListener('click', () => {
+            const followerUsernames = new Set(followersData.map(u => u.username.toLowerCase()));
+            const notFollowingBack = followingData.filter(
+                user => !followerUsernames.has(user.username.toLowerCase())
+            );
+
+            let csv = 'Username,Profile URL\n';
+            notFollowingBack.forEach(user => {
+                csv += `${user.username},${user.url}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'instagram_unfollowers.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        });
+
+        // Drag and drop
+        [followersBox, followingBox].forEach(box => {
+            const input = box.querySelector('input[type="file"]');
+
+            box.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                box.style.borderColor = '#52525b';
+                box.style.background = '#18181b';
+            });
+
+            box.addEventListener('dragleave', () => {
+                if (!box.classList.contains('active')) {
+                    box.style.borderColor = '';
+                    box.style.background = '';
+                }
+            });
+
+            box.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    input.files = files;
+                    input.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+    </script>
+</body>
+</html>
