@@ -15,47 +15,70 @@ function parseInstagramHTML(htmlContent) {
     const users = [];
     const seenUsernames = new Set();
 
-    // Select all links
-    const links = doc.querySelectorAll('a');
+    // 1. Select all user containers (works for both Followers and Following files)
+    // The class 'pam' and '_a6-g' are standard wrappers in these exports
+    const userCards = doc.querySelectorAll('div.pam._3-95._2ph-._a6-g');
 
-    links.forEach(link => {
-        const href = link.getAttribute('href');
-        if (!href) return;
+    userCards.forEach(card => {
+        let username = '';
+        let profileUrl = '';
 
-        // Clean trailing slash
-        let cleanHref = href;
-        if (cleanHref.endsWith('/')) {
-            cleanHref = cleanHref.slice(0, -1);
+        // ATTEMPT 1: Look for a Header (Common in "Following.html")
+        const header = card.querySelector('h2');
+        if (header) {
+            username = header.textContent.trim();
         }
 
-        // Check if it looks like a profile link
-        // Standard format: https://www.instagram.com/username
-        // We match strictly for a username after instagram.com/
-        // Remove query parameters
-        cleanHref = cleanHref.split('?')[0];
+        // ATTEMPT 2: Look for a Link (Common in "Followers.html")
+        if (!username) {
+            const link = card.querySelector('div._a6-p a');
+            if (link) {
+                const href = link.getAttribute('href');
+                if (href && href.includes('instagram.com/')) {
+                    // Split by instagram.com/ to get the path
+                    const parts = href.split('instagram.com/');
+                    if (parts.length > 1) {
+                        let segment = parts[1];
+                        
+                        // FIX: Remove mobile prefix "_u/" if present
+                        if (segment.startsWith('_u/')) {
+                            segment = segment.substring(3); // Remove first 3 chars "_u/"
+                        }
 
-        let username = '';
-        if (cleanHref.includes('instagram.com/')) {
-            const parts = cleanHref.split('instagram.com/');
-            if (parts.length > 1) {
-                let segment = parts[1];
-
-                if (segment.startsWith('_u/')) {
-                    segment = segment.substring(3);
+                        // Clean up trailing slashes or query params
+                        segment = segment.split('/')[0].split('?')[0];
+                        username = segment;
+                        profileUrl = href;
+                    }
                 }
-                username = segment.split('/')[0];
+                // Backup: Use link text if URL parsing failed
+                if (!username) username = link.textContent.trim();
             }
         }
 
-        if (username && /^[a-zA-Z0-9._]+$/.test(username)) {
-            // Filter out common non-profile paths
-            const nonUserPaths = ['p', 'reel', 'tv', 'stories', 'explore', 'about', 'developer', 'help', 'legal', 'privacy', 'terms'];
+        // ATTEMPT 3: Look for Plain Text (Deactivated accounts in "Followers.html")
+        if (!username) {
+            // Path: Card -> Wrapper -> Inner Div -> Text Div
+            const textDiv = card.querySelector('div._a6-p > div > div');
+            if (textDiv) {
+                const text = textDiv.textContent.trim();
+                // Filter out dates (simple check: dates usually contain 4 digits like 2023)
+                // or we can rely on the fact that usernames usually don't have spaces, 
+                // but "Oct 24, 2023" does.
+                if (!text.includes(',')) { 
+                    username = text;
+                    profileUrl = 'Deactivated/No Link';
+                }
+            }
+        }
 
-            if (!nonUserPaths.includes(username) && !seenUsernames.has(username)) {
+        // FINAL CHECK: Add valid usernames to list
+        if (username && username !== "Instagram User") {
+            if (!seenUsernames.has(username)) {
                 seenUsernames.add(username);
                 users.push({
                     username: username,
-                    url: href
+                    url: profileUrl || `https://www.instagram.com/${username}`
                 });
             }
         }

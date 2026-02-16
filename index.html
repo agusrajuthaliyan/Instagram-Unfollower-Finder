@@ -145,6 +145,33 @@
                     </div>
                 </div>
             </div>
+
+
+            <div class="info-section">
+                <h3 class="info-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    Why do deactivated accounts show up?
+                </h3>
+                <div class="info-content">
+                    <p>There is a known edge case with "ghost" or deactivated accounts:</p>
+                    <ul class="info-list">
+                        <li><strong>In your "Following" list:</strong> Instagram remembers user handles (e.g.,
+                            <em>cool_user_123</em>) because you actively followed them. It stays there as text.
+                        </li>
+                        <li><strong>In your "Followers" list:</strong> When that person deactivates their account,
+                            Instagram
+                            often removes their username entirely from this list or changes it to just "Instagram User".
+                        </li>
+                        <li><strong>The Result:</strong> The code compares the two lists. It sees <em>cool_user_123</em>
+                            in
+                            Following, but finds nothing in Followers. Thus, it marks them as "Not Following Back".</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
