@@ -18,29 +18,6 @@ A privacy-focused web app to find Instagram accounts that don't follow you back.
 5. Download and extract the ZIP file
 6. Upload `followers.html` and `following.html` to this app
 
-## Deployment to Vercel
-
-### Quick Deploy
-
-1. Push this repository to GitHub
-2. Go to [vercel.com](https://vercel.com)
-3. Click "New Project"
-4. Import your GitHub repository
-5. Click "Deploy" (no configuration needed)
-
-### Manual Configuration
-
-If you need to configure settings:
-
-1. Root Directory: `./`
-2. Build Command: (leave empty)
-3. Output Directory: `.`
-4. Install Command: (leave empty)
-
-## Local Development
-
-Simply open `index.html` in your browser. No build step required!
-
 ## Tech Stack
 
 - Pure HTML, CSS, and JavaScript

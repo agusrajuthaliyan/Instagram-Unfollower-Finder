@@ -670,13 +670,22 @@
         }
 
         analyzeBtn.addEventListener('click', () => {
+            if (!followersData || !followingData) {
+                console.error('followersData or followingData is empty');
+                return;
+            }
+
             const followerUsernames = new Set(followersData.map(u => u.username.toLowerCase()));
             const notFollowingBack = followingData.filter(
                 user => !followerUsernames.has(user.username.toLowerCase())
             );
 
-            displayResults(notFollowingBack);
-            
+            try {
+                displayResults(notFollowingBack);
+            } catch (error) {
+                console.error(`displayResults encountered an error: ${error}`);
+            }
+
             document.getElementById('totalFollowing').textContent = followingData.length;
             document.getElementById('totalFollowers').textContent = followersData.length;
             document.getElementById('notFollowingBack').textContent = notFollowingBack.length;
@@ -688,41 +697,38 @@
         });
 
         function displayResults(users) {
-            const container = document.getElementById('userListContainer');
-            
-            if (users.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">✓</div>
-                        <div class="empty-title">Everyone follows you back!</div>
-                        <div class="empty-description">All accounts you follow are following you back.</div>
-                    </div>
-                `;
-                return;
+            if (!users) {
+                throw new Error('displayResults called with null or undefined argument');
             }
 
-            const userList = document.createElement('div');
-            userList.className = 'user-list';
+            const notFollowingBack = users.filter(user => user && !user.followingBack);
+            const userList = document.getElementById('user-list');
 
-            users.forEach(user => {
-                const userItem = document.createElement('div');
-                userItem.className = 'user-item';
-                
-                const initial = user.username.charAt(0).toUpperCase();
-                
-                userItem.innerHTML = `
-                    <div class="avatar">${initial}</div>
-                    <div class="user-info">
-                        <div class="username">${user.username}</div>
-                        <a href="${user.url}" target="_blank" class="profile-link">View profile</a>
-                    </div>
-                `;
-                
-                userList.appendChild(userItem);
-            });
+            if (!userList) {
+                throw new Error('displayResults could not find element with id "user-list"');
+            }
 
-            container.innerHTML = '';
-            container.appendChild(userList);
+            userList.innerHTML = '';
+
+            try {
+                for (const user of notFollowingBack) {
+                    if (!user) {
+                        throw new Error(`displayResults encountered null or undefined element in array`);
+                    }
+
+                    const listItem = document.createElement('li');
+                    if (!listItem) {
+                        throw new Error('displayResults could not create list item element');
+                    }
+
+                    listItem.textContent = `${user.name} (@${user.username})`;
+                    if (!userList.appendChild(listItem)) {
+                        throw new Error('displayResults could not append list item element to list');
+                    }
+                }
+            } catch (error) {
+                console.error(`displayResults encountered an error: ${error}`);
+            }
         }
 
         exportBtn.addEventListener('click', () => {
