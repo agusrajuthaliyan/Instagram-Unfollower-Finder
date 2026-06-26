@@ -23,36 +23,36 @@ function parseInstagramHTML(htmlContent) {
         let username = '';
         let profileUrl = '';
 
-        // ATTEMPT 1: Look for a Header (Common in "Following.html")
-        const header = card.querySelector('h2');
-        if (header) {
-            username = header.textContent.trim();
+        // ATTEMPT 1: Look for a Link (Most reliable source for username)
+        const link = card.querySelector('div._a6-p a');
+        if (link) {
+            const href = link.getAttribute('href');
+            if (href && href.includes('instagram.com/')) {
+                // Split by instagram.com/ to get the path
+                const parts = href.split('instagram.com/');
+                if (parts.length > 1) {
+                    let segment = parts[1];
+                    
+                    // FIX: Remove mobile prefix "_u/" if present
+                    if (segment.startsWith('_u/')) {
+                        segment = segment.substring(3); // Remove first 3 chars "_u/"
+                    }
+
+                    // Clean up trailing slashes or query params
+                    segment = segment.split('/')[0].split('?')[0];
+                    username = segment;
+                    profileUrl = href;
+                }
+            }
+            // Backup: Use link text if URL parsing failed
+            if (!username) username = link.textContent.trim();
         }
 
-        // ATTEMPT 2: Look for a Link (Common in "Followers.html")
+        // ATTEMPT 2: Look for a Header (Backup - e.g. for display names)
         if (!username) {
-            const link = card.querySelector('div._a6-p a');
-            if (link) {
-                const href = link.getAttribute('href');
-                if (href && href.includes('instagram.com/')) {
-                    // Split by instagram.com/ to get the path
-                    const parts = href.split('instagram.com/');
-                    if (parts.length > 1) {
-                        let segment = parts[1];
-                        
-                        // FIX: Remove mobile prefix "_u/" if present
-                        if (segment.startsWith('_u/')) {
-                            segment = segment.substring(3); // Remove first 3 chars "_u/"
-                        }
-
-                        // Clean up trailing slashes or query params
-                        segment = segment.split('/')[0].split('?')[0];
-                        username = segment;
-                        profileUrl = href;
-                    }
-                }
-                // Backup: Use link text if URL parsing failed
-                if (!username) username = link.textContent.trim();
+            const header = card.querySelector('h2');
+            if (header) {
+                username = header.textContent.trim();
             }
         }
 
